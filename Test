@@ -1,0 +1,157 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+Created on Mon Oct 12 17:03:30 2020
+
+@author: luisaweiss
+"""
+
+import tkinter as tk
+from tkinter import Tk, Label, Entry, StringVar
+import PIL.Image
+from PIL import ImageTk, Image
+from tkinter import * 
+from matplotlib.figure import Figure 
+import matplotlib.pyplot as plt
+from matplotlib.backends.backend_tkagg import (FigureCanvasTkAgg, NavigationToolbar2Tk) 
+import pandas as pd
+import numpy as np
+import plotly.graph_objects as go
+# plot function is created for  
+# plotting the graph in  
+# tkinter window 
+category_names = ['lithium-ion', 'solar','offshore wind', 'onshore wind', 'pumped hydro', 'flywheel', 'vandium redox']
+
+lithium_ion = np.array([9500, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3500, 0, 0, 0, 0, 0, 0])
+solar = np.array([0, 20000, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 20000, 0, 0, 0, 0, 0])    
+offshore_wind = np.array([0, 0, 8, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 10])
+onshore_wind = np.array([0, 0, 0, 10, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])
+pumped_hydro = np.array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])
+flywheel = np.array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])
+vandium_redox = np.array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3500, 0, 0, 0, 0, 0, 0, 0])
+  
+def plot(parent): 
+    
+      
+    # the figure that will contain the plot 
+   
+    fig = plt.figure(figsize= (43,22)) 
+    y = (1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20)
+    fig, axes = plt.subplots(ncols=2, sharey=True)
+    plt.suptitle('Optimal Actions')
+    plt.yticks(np.arange(min(y), max(y)+1, 1.0))
+    plt.rcParams['figure.facecolor'] = 'whitesmoke'
+    width= 0.5
+    axes[0].invert_yaxis
+    axes[0].xaxis.set_label_position('top') 
+    axes[1].xaxis.set_label_position('top')
+    axes[0].yaxis.set_label_coords(1.15,1.02)
+    axes[0].barh(y, lithium_ion,  width,align='center',  color= 'red', label='lithium-ion')
+    axes[0].barh(y, vandium_redox, width,align='center', color= 'm', label= 'vandium redox')
+    axes[1].barh(y, solar, width,align='center', color= 'blue', label= 'solar')
+    axes[1].barh(y, offshore_wind,  width,align='center', color= 'y',  label= 'offshore wind')
+    axes[1].barh(y, onshore_wind, width,align='center', color= 'green', label= 'onshore wind')
+    axes[1].barh(y, pumped_hydro, width,align='center', color= 'orange', label= 'pumped hydro')
+    axes[1].barh(y, flywheel, width,align='center', color= 'm', label= 'flywheel')
+    axes[0].invert_xaxis()
+    axes[0].yaxis.tick_right()
+    axes[0].set_xlabel('Storage Units (kWh)')
+    axes[1].set_xlabel('Power Plants (kW)')
+    axes[0].set_ylabel('Year')
+    axes[0].legend(bbox_to_anchor=(2.55, 1.0),loc= 'upper left', ncol = 2)
+    axes[1].legend(bbox_to_anchor=(1.35, 0.8),loc= 'upper left', ncol= 2)
+    # creating the Tkinter canvas 
+    # containing the Matplotlib figure 
+    canvas = FigureCanvasTkAgg(fig, master = parent)   
+    canvas.draw() 
+    # placing the canvas on the Tkinter window 
+    canvas.get_tk_widget().pack() 
+        
+def create_window():
+    newwindow = tk.Toplevel(window)
+    newwindow.geometry('600x600')
+    return newwindow
+
+    
+def clear_search1(event):
+    centry.delete(0, tk.END)
+
+def clear_search2(event):
+    fentry.delete(0, tk.END)
+
+def clear_search3(event):
+    tfentry.delete(0, tk.END)
+
+window = tk.Tk()
+window.title('Optimal Actions for your Microgrid')
+window.geometry("600x600")
+
+frame1 = Frame(window) 
+frame1.pack(side = 'top') 
+
+frame2 = Frame(window)
+frame2.pack(side = 'left')
+
+frame3 = Frame(window)
+frame3.pack(side = 'right')
+
+frame4 = Frame(window)
+frame4.pack(side = 'bottom')
+
+# Weckrogrid Logo
+#wlogo = PIL.Image.open('/Users/elalam98/Desktop/weckrogrid.png') #open image
+#resize = wlogo.resize((200, 65), PIL.Image.ANTIALIAS)
+#wlogorz = ImageTk.PhotoImage(resize)
+#wlogolabel = Label(frame1, image = wlogorz)
+#wlogolabel.pack(side = 'top', pady = 5)
+
+# Company Name
+
+clabel = tk.Label(frame1,
+                  text = "Insert Company Name:",
+                  fg = "Black",
+                  font = "Gotham 16").pack()
+
+centry = tk.Entry(frame1, fg = "gray")
+centry.insert(0, "Company Name")
+centry.bind("<Enter>", clear_search1)
+centry.pack(side = 'top')
+
+# Number of Facilities
+
+flabel = tk.Label(frame2, 
+                  text = "Number of Facilities:",
+                  fg = "Blue",
+                  font = "Gotham 14").pack(side = 'top')
+fentry = tk.Entry(frame3, fg = "gray")
+fentry.insert(0, "Number of Facilities")
+fentry.bind("<Enter>", clear_search2)
+fentry.pack(side = 'top')
+
+# Type of Facilities
+
+tflabel = tk.Label(frame2,
+                   text = "Type of Facilities:",
+                   fg = "Blue",
+                   font = "Gotham 14").pack(side = 'bottom')
+tfentry = tk.Entry(frame3, fg = "gray")
+tfentry.insert(0, "Type of Facilities")
+tfentry.bind("<Enter>", clear_search3)
+tfentry.pack(side = 'bottom')
+
+# Plot Button
+
+pbutton = tk.Button(frame4,
+                    text = "Plot",
+                    command = lambda:plot(create_window()))
+pbutton.pack(side = 'right')                    
+
+
+# New Window Stuff
+
+# Status Label
+
+#status_label = Label(frame4, text = 'test', bd = 1, relief = SUNKEN, anchor = E)
+#status_label.pack(fill = X, side = BOTTOM, ipady = 2)
+
+window.mainloop()
