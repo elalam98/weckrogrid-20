@@ -57,6 +57,7 @@ def plot(parent):
     axes[0].invert_xaxis()
     axes[0].yaxis.tick_right()
     axes[0].tick_params(pad=15)
+    axes[1].tick_params(pad=15)
     axes[0].set_xlabel('Storage Units (kWh)')
     axes[1].set_xlabel('Power Plants (kW)')
     axes[0].set_ylabel('Year')
