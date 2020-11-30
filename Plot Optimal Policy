@@ -1,0 +1,113 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+Created on Wed Nov 18 09:49:10 2020
+
+@author: luisaweiss
+"""
+
+
+import PIL.Image
+from PIL import ImageTk, Image
+from matplotlib.figure import Figure 
+from matplotlib.pyplot import figure
+import matplotlib.pyplot as plt
+from matplotlib.backends.backend_tkagg import (FigureCanvasTkAgg, NavigationToolbar2Tk) 
+import pandas as pd
+import numpy as np
+# plot function is created for  
+# plotting the graph in  
+# tkinter window 
+
+""" select number of random walks """
+num_random_walks = 1
+
+""" set initial seed """
+if True:
+    initial_seed = 13
+    np.random.seed(initial_seed)
+    random.seed(initial_seed)
+
+""" random walk """
+overall_rewards = []
+
+
+#lithium_ion = np.array([9500, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3500, 0, 0, 0, 0, 0, 0])
+#solar = np.array([0, 20000, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 20000, 0, 0, 0, 0, 0])    
+#offshore_wind = np.array([0, 0, 8, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 10])
+#onshore_wind = np.array([0, 0, 0, 10, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])
+#pumped_hydro = np.array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])
+#flywheel = np.array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])
+#vandium_redox = np.array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3500, 0, 0, 0, 0, 0, 0, 0])
+  
+
+    
+      
+    # the figure that will contain the plot 
+   
+fig = plt.figure(figsize= (6,3)) 
+y = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20]
+fig, axes = plt.subplots(ncols=2, sharey=True, figsize=(10, 6))
+plt.suptitle('Optimal Actions')
+plt.yticks(np.arange(0,21,1))
+plt.rcParams['figure.facecolor'] = 'whitesmoke'
+width= 0.5
+axes[0].invert_yaxis
+axes[0].xaxis.set_label_position('top') 
+axes[1].xaxis.set_label_position('top')
+axes[0].yaxis.set_label_coords(1.15,1.02)
+for rw in range(num_random_walks):
+    reset_environment()
+    optimal_policy, rewards_path, states_path, prv_state = [], [], [], start_state
+    for i in range(rl_hparams['decision_periods']):
+        if rw == 0:
+            if i == 2 or i == 3:
+                pass
+
+        optimal_action, _ = MGrid.q_values(prv_state)
+        if optimal_action != 0:
+            
+            if actions_map[optimal_action][0] in power_plants.keys() and actions_map[optimal_action][1] != 0:
+                    #for level in power_plants[power_plant].levels:
+                nxt_state, reward_period = MGrid.compute_nextstate_reward(prv_state, optimal_action, 10)
+                optimal_policy.append(actions_map[optimal_action])
+                
+              #  axes[1].barh(y, optimal_action, width,align='center', color= 'blue', label= optimal_policy[-1][0])
+                axes[1].barh(y, optimal_policy[-1][1], width,align='center', color= 'blue', label= optimal_policy[-1][0])    
+            
+            
+            if actions_map[optimal_action][0] in storage_units.keys() and actions_map[optimal_action][1] != 0:
+                        #for level in storage_units[storage_unit].levels: 
+                nxt_state, reward_period = MGrid.compute_nextstate_reward(prv_state, optimal_action, 10)
+                optimal_policy.append(actions_map[optimal_action])
+                  
+               # axes[0].barh(y, optimal_action,  width,align='center',  color= 'red', label=optimal_policy[-1][0])
+                axes[0].barh(y, optimal_policy[-1][1],  width,align='center',  color= 'red', label=optimal_policy[-1][0])
+            
+            rewards_path.append(reward_period)    
+            states_path.append(prv_state)
+            prv_state = nxt_state
+        overall_rewards.append(np.mean(rewards_path))
+   
+    
+    
+    
+axes[0].invert_xaxis()
+axes[0].yaxis.tick_right()
+axes[0].tick_params(pad=15)
+axes[1].tick_params(pad=15)
+axes[0].set_xlabel('Storage Units (kWh)')
+axes[1].set_xlabel('Power Plants (kW)')
+axes[0].set_ylabel('Year')
+axes[0].legend(loc= 'upper left', ncol = 1)
+axes[1].legend(loc= 'upper right', ncol= 1)
+plt.show()
+    #the_table = plt.table(cellText=optimal_policy,
+                    #  rowLabels=decision_periods,
+                   #   rowColours=colors,
+                   #   loc='bottom')
+   # plt.subplots_adjust(left=0.2, bottom=0.2)
+    # creating the Tkinter canvas 
+    # containing the Matplotlib figure 
+  
+      
