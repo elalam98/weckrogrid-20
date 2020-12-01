@@ -15,6 +15,9 @@ import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import (FigureCanvasTkAgg, NavigationToolbar2Tk) 
 import pandas as pd
 import numpy as np
+from matplotlib.lines import Line2D
+from matplotlib.font_manager import FontProperties
+
 # plot function is created for  
 # plotting the graph in  
 # tkinter window 
@@ -45,17 +48,17 @@ overall_rewards = []
       
     # the figure that will contain the plot 
    
-fig = plt.figure(figsize= (6,3)) 
+
 y = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20]
 fig, axes = plt.subplots(ncols=2, sharey=True, figsize=(10, 6))
 plt.suptitle('Optimal Actions')
-plt.yticks(np.arange(0,21,1))
+plt.yticks(np.arange(1,21,1))
 plt.rcParams['figure.facecolor'] = 'whitesmoke'
 width= 0.5
 axes[0].invert_yaxis
 axes[0].xaxis.set_label_position('top') 
 axes[1].xaxis.set_label_position('top')
-axes[0].yaxis.set_label_coords(1.15,1.02)
+axes[0].yaxis.set_label_coords(1.14,.99)
 for rw in range(num_random_walks):
     reset_environment()
     optimal_policy, rewards_path, states_path, prv_state = [], [], [], start_state
@@ -71,36 +74,70 @@ for rw in range(num_random_walks):
                     #for level in power_plants[power_plant].levels:
                 nxt_state, reward_period = MGrid.compute_nextstate_reward(prv_state, optimal_action, 10)
                 optimal_policy.append(actions_map[optimal_action])
-                
+               
               #  axes[1].barh(y, optimal_action, width,align='center', color= 'blue', label= optimal_policy[-1][0])
-                axes[1].barh(y, optimal_policy[-1][1], width,align='center', color= 'blue', label= optimal_policy[-1][0])    
+                
+               # axes[1].barh(y, optimal_policy[-1][1], width,align='center', color= 'blue', label= optimal_policy[-1][0])    
             
             
             if actions_map[optimal_action][0] in storage_units.keys() and actions_map[optimal_action][1] != 0:
                         #for level in storage_units[storage_unit].levels: 
                 nxt_state, reward_period = MGrid.compute_nextstate_reward(prv_state, optimal_action, 10)
                 optimal_policy.append(actions_map[optimal_action])
-                  
+              
                # axes[0].barh(y, optimal_action,  width,align='center',  color= 'red', label=optimal_policy[-1][0])
-                axes[0].barh(y, optimal_policy[-1][1],  width,align='center',  color= 'red', label=optimal_policy[-1][0])
-            
-            rewards_path.append(reward_period)    
-            states_path.append(prv_state)
-            prv_state = nxt_state
-        overall_rewards.append(np.mean(rewards_path))
+                
+              #  axes[0].barh(y, optimal_policy[-1][1],  width,align='center',  color= 'red', label=optimal_policy[-1][0])
+        rewards_path.append(reward_period)    
+        states_path.append(prv_state)
+        prv_state = nxt_state
+    overall_rewards.append(np.mean(rewards_path))
+
+storage_color = ['lightcoral','maroon','red','lightsalmon','darkorange']
+power_color = ['aqua','dodgerblue', 'blue', 'navy', 'teal']
+
    
+for i in range(len(optimal_policy)):
+    if optimal_policy[i][0] in storage_units_list:
+        index = storage_units_list.index(optimal_policy[i][0])
+   
+        color = storage_color[index]
+        axes[0].barh(i+1, optimal_policy[i][1],  width,align='center',  color= color, label= optimal_policy[i][0])
+        
+
+    if optimal_policy[i][0] in power_plants_list:
+        index = power_plants_list.index(optimal_policy[i][0])
+        
+        color = power_color[index]
+
+        axes[1].barh(i+1, optimal_policy[i][1], width,align='center', color= color, label= optimal_policy[i][0])
+
+            
+   #label= optimal_policy[i][0]
     
     
     
 axes[0].invert_xaxis()
 axes[0].yaxis.tick_right()
+axes[1].yaxis.tick_left()
 axes[0].tick_params(pad=15)
 axes[1].tick_params(pad=15)
-axes[0].set_xlabel('Storage Units (kWh)')
-axes[1].set_xlabel('Power Plants (kW)')
-axes[0].set_ylabel('Year')
-axes[0].legend(loc= 'upper left', ncol = 1)
-axes[1].legend(loc= 'upper right', ncol= 1)
+axes[0].set_xlabel('Storage Units (kWh)', fontsize=15)
+axes[1].set_xlabel('Power Plants (kW)', fontsize=15)
+axes[0].set_ylabel('Year', fontsize= 15, rotation=0, va= 'center')
+fontP = FontProperties()
+fontP.set_size('x-small')
+
+handles0 = [Line2D([0], [0], color='lightcoral', lw=4, label='Lithium-ion'),Line2D([0], [0], color='maroon', lw=4, label='Lead Acid'), Line2D([0], [0], color='red', lw=4, label='Vanadium Redox'), Line2D([0], [0], color='lightsalmon', lw=4, label='Flywheel'), Line2D([0], [0], color='darkorange', lw=4, label='Pumped Hydro')]
+
+handles1 = [Line2D([0], [0], color='aqua', lw=4, label='Solar'), Line2D([0], [0], color='dodgerblue', lw=4, label='Onshore Wind'), Line2D([0], [0], color='blue', lw=4, label='Offshore Wind'),Line2D([0], [0], color='navy', lw=4, label='Diesel')]                                                 
+                                                              
+axes[0].legend(handles = handles0,loc= 'upper left', bbox_to_anchor = (-0.4,1),prop=fontP)
+
+axes[1].legend(handles = handles1,loc= 'upper right',bbox_to_anchor = (1.4,1),prop=fontP)
+
+plt.tight_layout()
+
 plt.show()
     #the_table = plt.table(cellText=optimal_policy,
                     #  rowLabels=decision_periods,
