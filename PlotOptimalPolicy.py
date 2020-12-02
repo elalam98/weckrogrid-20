@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Created on Tue Dec  1 19:14:53 2020
+Created on Wed Nov 18 09:49:10 2020
 
-@author: maekhaled
+@author: luisaweiss
 """
-from reinforcement_learning import *
 import random
+
 import numpy as np
 import PIL.Image
 from PIL import ImageTk, Image
@@ -18,6 +18,7 @@ import pandas as pd
 import numpy as np
 from matplotlib.lines import Line2D
 from matplotlib.font_manager import FontProperties
+
 
 # plot function is created for  
 # plotting the graph in  
@@ -93,9 +94,6 @@ for rw in range(num_random_walks):
         states_path.append(prv_state)
         prv_state = nxt_state
     overall_rewards.append(np.mean(rewards_path))
-    
-   
-#(quantity,total cost)
 
 ppquantity = [0,0,0,0,0]
 suquantity = [0,0,0,0,0]
@@ -105,14 +103,12 @@ totalqpp=0
 totalqsu=0
 totalcpp=0
 totalcsu=0
-
-storage_color = ['lightcoral','maroon','red','lightsalmon','darkorange']
-power_color = ['aqua','dodgerblue', 'blue', 'navy', 'teal']
-
 tabledata = []
 table2data = []
 table3data = []
 
+storage_color = ['lightcoral','maroon','red','lightsalmon','darkorange']
+power_color = ['aqua','dodgerblue', 'blue', 'navy', 'teal']
 for i in range(len(optimal_policy)):
     
     if optimal_policy[i][0] in storage_units_list:
@@ -161,6 +157,10 @@ for i in range(len(suquantity)):
 for i in range(len(ppquantity)):
     table3data.append([ppquantity[i], ppcost[i]])    
  
+   
+
+    
+    
     
 axes[0].invert_xaxis()
 axes[0].yaxis.tick_right()
@@ -184,11 +184,7 @@ axes[1].legend(handles = handles1,loc= 'upper right',bbox_to_anchor = (1.4,1),pr
 plt.tight_layout()
 
 plt.show()
-
-
-
-
-
+fig.savefig('plot.png')
 #Create overall table
 
 fig, ax = plt.subplots()
@@ -201,12 +197,8 @@ columns = ('Investment Type', 'Quantity','Investment Cost ($)')
 rows = ['Year %d' % x for x in range(1,21)]
 
 results_table = plt.table(cellText = tabledata, rowLabels=rows, colLabels=columns, loc = 'center')
-
-
 plt.show()
-
-
-
+fig.savefig('table1.png')
 
 # Create Storage Units Table
 fig, ax = plt.subplots()
@@ -225,11 +217,7 @@ table2data.append([totalqsu,totalcsu])
 su_table = plt.table(cellText = table2data, rowLabels=rows, rowLoc='right', colWidths=[0.25 for x in columns], colLabels=columns, loc = 'center right')
             
 plt.show()
-
-
-
-
-
+fig.savefig('table2.png')
 # Create Power Plants Table
 fig, ax = plt.subplots()
 
@@ -248,5 +236,13 @@ pp_table = plt.table(cellText = table3data, rowLabels=rows, rowLoc='right', colW
 
     
 plt.show()
-
-
+fig.savefig('table3.png')
+    #the_table = plt.table(cellText=optimal_policy,
+                    #  rowLabels=decision_periods,
+                   #   rowColours=colors,
+                   #   loc='bottom')
+   # plt.subplots_adjust(left=0.2, bottom=0.2)
+    # creating the Tkinter canvas 
+    # containing the Matplotlib figure 
+  
+      
