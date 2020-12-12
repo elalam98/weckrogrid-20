@@ -2,7 +2,7 @@
 Weckrogrid-20 (Rutgers ISE Senior Design Project)
 
                                                       
-                                                      How To Access Our Website
+                                          How To Access Our Website
 
 
 As our website has not yet been made public, to access the web application with full functionality please follow the steps below:
